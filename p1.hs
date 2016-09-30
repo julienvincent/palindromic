@@ -2,10 +2,10 @@
 -- stack --install-ghc runghc
 
 {-
-    let dist(i) be the value of the distance tothe next palindrome from i
+    let dist(i) be the value of the distance to the next palindrome from i
 
-    Target 1)   Prove that sum dist(i) of all integers > 0 and < 1000 000 equates to 495076635
-    Target 2)   Determine the sum of dist(i) of all integers > 0 and < 1000 000 000 000
+    Target 1)   Prove that sum dist(i) of all integers > 0 and < 1000 000 equates to 495076635 (done)
+    Target 2)   Determine the sum of dist(i) of all integers > 0 and < 1000 000 000 000 (240H worth of calc time :\ ie: not done)
 -}
 
 _sum :: Int -> Int
