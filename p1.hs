@@ -8,6 +8,9 @@
     Target 2)   Determine the sum of dist(i) of all integers > 0 and < 1000 000 000 000
 -}
 
+_sum :: Int -> Int
+_sum x = (x * x + x) `div` 2
+
 -- Check if an int is a palindrome
 check :: Int -> Bool
 check i = do
@@ -21,9 +24,6 @@ dist i acc = do
     if check _i
         then acc
         else dist i (acc + 1)
-
-_sum :: Int -> Int
-_sum x = (x * x + x) `div` 2
 
 calc :: Int -> Int -> Int -> Int
 calc start end acc = do
