@@ -8,20 +8,6 @@
     Target 2)   Determine the sum of dist(i) of all integers > 0 and < 1000 000 000 000 (done. ~27s calc time)
 -}
 
-_sum :: Int -> Int
-_sum x = (x * x + x) `div` 2
-
--- Check if an int is a palindrome
-check :: Int -> Bool
-check i =
-    let s = show i
-    in  s == reverse s
-
-roundUp :: Int -> Int -> Int
-roundUp num numLength =
-    let increment = 10 ^ (numLength `div` 2)
-    in  (ceiling ((fromIntegral num ::Double) / (fromIntegral increment))) * increment
-
 findNext :: Int -> Int
 findNext i =
     let num = show i
@@ -36,42 +22,61 @@ findNext i =
 
         (increment, newNum) =
             if even numLength
+                -- even reconstruction
                 then (oddMultiplier, read (half ++ (reverse half)))
+                -- odd reconstruction
                 else (multiplier, read (half ++ [middle] ++ (reverse half)))
-    in
-        if newNum > i
-            then newNum
-            else if middle == '9'
-                then findNext (roundUp newNum numLength)
-                else newNum + increment
 
--- Determine distance to next palindrome from i
-dist :: Int -> Int
-dist i
-   | check i    = 0
-   | otherwise  = (findNext i) - i
+        roundUp :: Int -> Int -- round num up to next ^10 from center digit
+        roundUp num =
+            let increment = 10 ^ (numLength `div` 2)
+            in (ceiling ((fromIntegral num :: Double) / (fromIntegral increment))) * increment
 
-calc :: Int -> Int -> Int -> Int
-calc start end acc = do
-    if start >= end
+    in if newNum > i
+        -- we have the next palindrome
+        then newNum
+        else if middle == '9'
+            -- must round up the middle number of newNum and then try again
+            then findNext (roundUp newNum)
+            -- newNum + increment is the next palindrome
+            else newNum + increment
+
+dist :: Int -> Int -- Determine distance to next palindrome from i
+dist i =
+    let check :: Int -> Bool -- Check if an int is a palindrome
+        check i =
+            let s = show i
+            in s == reverse s
+
+    in if check i
+        then 0
+        else (findNext i) - i
+
+calc :: Int -> Int -> Int -> Int -- calc sum of dist(i) over n
+calc start end acc =
+    let _sum :: Int -> Int -- nth triangular equation
+        _sum x = (x * x + x) `div` 2
+
+    in if start >= end
         -- We are done. return the sum
         then acc
-        else do
+        else
             -- Get the distance to the next palindrome
             let distance = dist start
-            let nextIteration = start + distance
+                -- determine iterations to skip
+                nextIteration = start + distance
 
             -- Distance will be 0 for single digit palindromes. Skip them.
-            if distance == 0
+            in if distance == 0
                 then calc (start + 1) end acc
                 else if nextIteration > end
                     -- Add all iterations until the end of the sequence
-                    then do
+                    then
                         let diff = nextIteration - end
-                        let totalSum = _sum distance
-                        let diffSum = _sum diff
-                        let nextAcc = totalSum - diffSum
-                        calc (start + nextIteration) end (acc + nextAcc)
+                            totalSum = _sum distance
+                            diffSum = _sum diff
+                            nextAcc = totalSum - diffSum
+                        in calc (start + nextIteration) end (acc + nextAcc)
                     -- Add all iterations until the next palindrome
                     else calc (nextIteration + 1) end (acc + (_sum distance))
 
