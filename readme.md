@@ -5,7 +5,7 @@
 
 ##### run
 ```
-$ stack p1.hs
+$ stack algorythm.hs
 "Iterations?:"
 // enter times to run, eg: 20
 "result: 53"
